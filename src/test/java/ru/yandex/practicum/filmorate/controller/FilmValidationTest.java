@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FilmControllerTests {
-    final String URI_FILMS = "/films";
+   static final String URI_FILMS = "/films";
 
     Film film = new Film(1,
             "name",
@@ -38,9 +38,9 @@ class FilmControllerTests {
                  LocalDate.parse("1900-03-25"),
                 200);
 
-        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS
-                , film
-                , String.class);
+        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS,
+                 film,
+                String.class);
 
         int actual = response.getStatusCodeValue();
 
@@ -57,9 +57,9 @@ class FilmControllerTests {
                  LocalDate.parse("1900-03-25"),
                 200);
 
-        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS
-                , film
-                , String.class);
+        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS,
+                 film,
+                 String.class);
 
         int actual = response.getStatusCodeValue();
 
@@ -74,9 +74,9 @@ class FilmControllerTests {
                  LocalDate.parse("1890-03-25"),
                  200);
 
-        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS
-                , film
-                , String.class);
+        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS,
+                 film,
+                 String.class);
 
         int actual = response.getStatusCodeValue();
 
@@ -91,9 +91,9 @@ class FilmControllerTests {
                  LocalDate.parse("1900-03-25"),
                  -200);
 
-        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS
-                , film
-                , String.class);
+        ResponseEntity<String> response = this.restTemplate.postForEntity(URI_FILMS,
+                 film,
+                 String.class);
 
         int actual = response.getStatusCodeValue();
 
@@ -102,22 +102,22 @@ class FilmControllerTests {
 
     @Test
     void filmUpdate() {
-        ResponseEntity<String> response1 = this.restTemplate.postForEntity(URI_FILMS
-                , film
-                , String.class);
+        ResponseEntity<String> response1 = this.restTemplate.postForEntity(URI_FILMS,
+                 film,
+                 String.class);
 
-        Film updatedFilm = new Film(1
-                ,"Film Updated"
-                , "New film update description"
-                , LocalDate.parse("1989-04-17")
-                , 190);
+        Film updatedFilm = new Film(1,
+                "Film Updated",
+                "New film update description",
+                 LocalDate.parse("1989-04-17"),
+                 190);
 
         HttpEntity<Film> httpEntity = new HttpEntity<>(updatedFilm);
 
-        ResponseEntity<String> response2 = this.restTemplate.exchange(URI_FILMS
-                , HttpMethod.PUT
-                , httpEntity
-                , String.class);
+        ResponseEntity<String> response2 = this.restTemplate.exchange(URI_FILMS,
+                 HttpMethod.PUT,
+                 httpEntity,
+                 String.class);
 
         int actual1 = response2.getStatusCodeValue();
         String actual2 = response2.getBody();
@@ -133,22 +133,22 @@ class FilmControllerTests {
 
     @Test
     void filmUpdateUnknown() {
-        ResponseEntity<String> response1 = this.restTemplate.postForEntity(URI_FILMS
-                , film
-                , String.class);
+        ResponseEntity<String> response1 = this.restTemplate.postForEntity(URI_FILMS,
+                 film,
+                 String.class);
 
-        Film updatedFilm = new Film(-1
-                ,"Film Updated"
-                , "New film update description"
-                , LocalDate.parse("1989-04-17")
-                , 190);
+        Film updatedFilm = new Film(-1,
+                "Film Updated",
+                 "New film update description",
+                LocalDate.parse("1989-04-17"),
+                 190);
 
         HttpEntity<Film> httpEntity = new HttpEntity<>(updatedFilm);
 
-        ResponseEntity<String> response2 = this.restTemplate.exchange(URI_FILMS
-                , HttpMethod.PUT
-                , httpEntity
-                , String.class);
+        ResponseEntity<String> response2 = this.restTemplate.exchange(URI_FILMS,
+                 HttpMethod.PUT,
+                 httpEntity,
+                 String.class);
 
         int actual1 = response2.getStatusCodeValue();
 
@@ -157,12 +157,12 @@ class FilmControllerTests {
 
     @Test
     void filmGetAll() {
-        ResponseEntity<String> response1 = this.restTemplate.postForEntity(URI_FILMS
-                , film
-                , String.class);
+        ResponseEntity<String> response1 = this.restTemplate.postForEntity(URI_FILMS,
+                 film,
+                 String.class);
 
-        ResponseEntity<String> response2 = this.restTemplate.getForEntity(URI_FILMS
-                , String.class);
+        ResponseEntity<String> response2 = this.restTemplate.getForEntity(URI_FILMS,
+                 String.class);
 
         int actual1 = response2.getStatusCodeValue();
         String actual2 = response2.getBody();
