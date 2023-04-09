@@ -1,50 +1,53 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
-@AllArgsConstructor
-@Slf4j
 public class UserController {
-    private final UserService userService;
+    private static int id = 1;
+    private final Map<Integer, User> users = new HashMap<>();
 
-    @GetMapping
-    public List<User> getFilms() {
-        List<User> usersList = new ArrayList<>(userService.getAllUsers().values());
-        log.debug("Количество пользователей: {}", usersList.size());
-        return usersList;
-    }
-
-    @PostMapping
-    public User createFilm(@Valid @RequestBody User user) {
-        if (userService.getAllUsers().containsKey(user.getId())) {
-            throw new RuntimeException("Пользователь уже есть в базе");
+    @PostMapping()
+    public User addUser(@Valid @RequestBody User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
         }
-        userService.setUserNameByLogin(user, "Добавлен");
-        return userService.createUser(user);
+
+        user.setId(id);
+        users.put(id++, user);
+        log.info("Добавлен пользователь: " + user);
+
+        return user;
     }
 
-    @PutMapping
-    public User updateFilm(@RequestBody User user) {
-        if (!userService.getAllUsers().containsKey(user.getId())) {
-            throw new RuntimeException("Пользователя нет в базе");
+    @PutMapping()
+    public User updateUser(@Valid @RequestBody User user) {
+        if (users.get(user.getId()) == null) {
+            log.error("Обновление несуществующего пользователя");
+            throw new ValidationException();
         }
-        userService.setUserNameByLogin(user, "Обновлен");
-        return userService.updateUser(user);
+
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+
+        users.put(user.getId(), user);
+        log.info("Обновлен пользователь: " + user);
+
+        return user;
     }
 
+    @GetMapping()
+    public Collection<User> getUsers() {
+        log.info("Получение пользователей");
+        return users.values();
+    }
 }

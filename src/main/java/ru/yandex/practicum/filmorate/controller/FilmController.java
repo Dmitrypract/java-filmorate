@@ -1,51 +1,58 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import javax.validation.Valid;
-
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/films")
-@AllArgsConstructor
-@Slf4j
 public class FilmController {
-    private final FilmService filmService;
+    private static int id = 1;
+    private final Map<Integer, Film> films = new HashMap<>();
 
-    @GetMapping
-    public List<Film> getFilms() {
-        List<Film> filmsList = new ArrayList<>(filmService.getAllFilms().values());
-        log.debug("Количество фильмов: {}", filmsList.size());
-        return filmsList;
+    @GetMapping()
+    public Collection<Film> getFilms() {
+        log.info("Получение фильмов");
+        return films.values();
     }
 
-    @PostMapping
-    public Film createFilm(@Valid @RequestBody Film film) {
-        if (filmService.getAllFilms().containsKey(film.getId())) {
-            throw new RuntimeException("Фильм уже есть в базе");
+    @PutMapping()
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        releaseDateCheck(film);
+
+        if (films.get(film.getId()) == null) {
+            log.error("Обновление несуществующего фильма");
+            throw new ValidationException();
         }
-        filmService.validateReleaseDate(film, "Добавлен");
-        return filmService.createFilm(film);
+
+        films.put(film.getId(), film);
+        log.info("Обновлен фильм: " + film);
+
+        return film;
     }
 
-    @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
-        if (!filmService.getAllFilms().containsKey(film.getId())) {
-            throw new RuntimeException("Фильм нет в базе");
+    @PostMapping()
+    public Film addFilm(@Valid @RequestBody Film film) {
+        releaseDateCheck(film);
+        film.setId(id);
+        films.put(id++, film);
+        log.info("Добавлен фильм: " + film);
+
+        return film;
+    }
+
+    private void releaseDateCheck(Film film) {
+        if (film.getReleaseDate()
+                .isBefore(LocalDate.parse("28-12-1895", DateTimeFormatter.ofPattern("dd-MM-yyyy")))) {
+            log.error("Ошибка валидации");
+            throw new ValidationException();
         }
-        filmService.validateReleaseDate(film, "Обновлен");
-        return filmService.updateFilm(film);
     }
-
 }
