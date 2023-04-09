@@ -30,7 +30,7 @@ public class FilmValidationTests {
                 .name("aaa")
                 .description("bbb")
                 .releaseDate(LocalDate.parse("11-11-2011", DateTimeFormatter.ofPattern("dd-MM-yyyy")))
-                .duration(Duration.ofMinutes(120))
+                .duration((120))
                 .build();
 
         filmController = new FilmController();
@@ -94,7 +94,7 @@ public class FilmValidationTests {
 
     @Test
     public void negativeDurationTest() {
-        film.setDuration(Duration.ofSeconds(-200));
+        film.setDuration((-200));
         assertEquals(1, validator.validate(film).size());
     }
 

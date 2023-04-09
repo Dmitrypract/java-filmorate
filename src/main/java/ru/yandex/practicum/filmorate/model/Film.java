@@ -30,6 +30,6 @@ public class Film {
     @PastOrPresent
     private LocalDate releaseDate;
 
-    @DurationMin(nanos = 1)
-    private Duration duration;
+    @PositiveOrZero
+    private Integer duration;
 }
