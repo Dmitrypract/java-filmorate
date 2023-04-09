@@ -10,10 +10,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 
 import org.hibernate.validator.constraints.time.DurationMin;
-import ru.yandex.practicum.filmorate.annotations.CorrectReleaseDay;
 
-@Data
-@AllArgsConstructor
+
+
 @Builder
 @Getter
 @Setter
@@ -31,6 +30,6 @@ public class Film {
     @PastOrPresent
     private LocalDate releaseDate;
 
-    @DurationMin(message = "duration can not be negative")
+    @DurationMin(nanos = 1)
     private Duration duration;
 }

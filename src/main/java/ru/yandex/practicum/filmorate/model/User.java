@@ -7,12 +7,10 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
 
 import lombok.*;
-import ru.yandex.practicum.filmorate.annotations.CorrectLogin;
+
 
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
 @Builder
 @Getter
 @Setter
@@ -21,15 +19,11 @@ public class User {
     @PositiveOrZero(message = "id can not be negative")
     private int id;
 
-   // @NotNull(message = "login must not be null")
     @Email(message = "invalid email")
     @NotBlank
     private String email;
-
     @NotBlank(message = "login must not be empty")
-   // @CorrectLogin
     private String login;
-
     private String name;
 
     /**
