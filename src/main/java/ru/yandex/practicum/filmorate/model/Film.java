@@ -6,12 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
-import java.time.Duration;
 import java.time.LocalDate;
-
-import org.hibernate.validator.constraints.time.DurationMin;
-
-
 
 @Builder
 @Getter
