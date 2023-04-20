@@ -26,7 +26,7 @@ public class FilmValidationTests {
 
     @BeforeEach
     public void setUp() {
-        film = new Film(1, "name", "aa", LocalDate.of(2002, 2, 2), Duration.ofMinutes(2));
+        film = new Film(1, "name", "aa", LocalDate.of(2002, 2, 2), 2);
         filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
     }
 
@@ -80,7 +80,7 @@ public class FilmValidationTests {
 
     @Test
     public void negativeDurationTest() {
-        film.setDuration(Duration.ofSeconds(-200));
+        film.setDuration(-200);
         assertEquals(1, validator.validate(film).size());
     }
 

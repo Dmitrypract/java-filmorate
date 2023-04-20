@@ -30,12 +30,12 @@ public class Film {
     @CorrectReleaseDay(message = "releaseDate must be after 28-DEC-1895")
     private LocalDate releaseDate;
 
-    @DurationMin(nanos = 1)
-    private Duration duration;
+    @PositiveOrZero
+    private Integer duration;
 
     private Set<Long> likes = new HashSet<>();
 
-    public Film(long id, String name, String description, LocalDate releaseDate, Duration duration) {
+    public Film(long id, String name, String description, LocalDate releaseDate, Integer duration) {
         this.id = id;
         this.name = name;
         this.description = description;
