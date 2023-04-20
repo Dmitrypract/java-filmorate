@@ -2,15 +2,12 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.time.DurationMin;
 import ru.yandex.practicum.filmorate.annotations.CorrectReleaseDay;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 
