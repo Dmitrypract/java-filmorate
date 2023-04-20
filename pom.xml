@@ -45,7 +45,11 @@
 			<artifactId>logbook-spring-boot-starter</artifactId>
 			<version>2.14.0</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
