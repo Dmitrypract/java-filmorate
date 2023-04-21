@@ -1,14 +1,13 @@
 package ru.yandex.practicum.filmorate.model;
 
-import javax.validation.Valid;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
 
 import lombok.*;
-import ru.yandex.practicum.filmorate.annotations.CorrectLogin;
+
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -19,7 +18,7 @@ import java.util.Set;
 @ToString
 public class User {
     @PositiveOrZero
-    private long id;
+    private Long id;
     @Email
     @NotBlank
     private String email;
@@ -39,16 +38,5 @@ public class User {
     }
 
 
-    public void addFriend(long id) {
-        if (friendsId == null) {
-            friendsId = new HashSet<>();
-        }
-        friendsId.add(id);
-    }
 
-
-
-    public void unfriend(long id) {
-        friendsId.remove(id);
-    }
 }

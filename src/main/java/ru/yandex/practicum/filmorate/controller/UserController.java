@@ -14,7 +14,7 @@ import java.util.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class UserController {
+public class   UserController {
     private final UserService userService;
 
     @PostMapping()
@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@Valid @PathVariable int id) {
+    public User getUserById(@Valid @PathVariable long id) {
         return userService.getUserById(id);
     }
 
@@ -38,22 +38,22 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@Valid @PathVariable int id, @PathVariable int friendId) {
+    public void addFriend(@Valid @PathVariable long id, @PathVariable long friendId) {
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void unfriend(@Valid @PathVariable int id, @PathVariable int friendId) {
+    public void unfriend(@Valid @PathVariable long id, @PathVariable long friendId) {
         userService.unfriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<User> getCommonFriends(@Valid @PathVariable int id, @PathVariable int otherId) {
+    public Collection<User> getCommonFriends(@Valid @PathVariable long id, @PathVariable long otherId) {
         return userService.getCommonFriends(id, otherId);
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> getFriends(@Valid @PathVariable int id) {
+    public Collection<User> getFriends(@Valid @PathVariable long id) {
         return userService.getFriends(id);
     }
 }

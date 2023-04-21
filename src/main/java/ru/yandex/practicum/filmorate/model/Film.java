@@ -16,7 +16,7 @@ import java.util.Set;
 @ToString
 public class Film {
     @PositiveOrZero
-    private long id;
+    private Long id;
 
     @NotBlank(message = "name must not be empty")
     private String name;
@@ -40,14 +40,5 @@ public class Film {
         this.duration = duration;
     }
 
-    public void addLike(long id) {
-        if (likes == null) {
-            likes = new HashSet<>();
-        }
-        likes.add(id);
-    }
 
-    public void deleteLike(long id) {
-        likes.remove(id);
-    }
 }
