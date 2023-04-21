@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 
@@ -61,7 +60,7 @@ public class UserService implements UserServiceInterface  {
         return userStorage.getUsersByIds(commonFriendIds);
     }
 
-   @Override
+    @Override
     public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
