@@ -64,6 +64,7 @@ public class UserService implements UserServiceInterface  {
     public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
+
     @Override
     public Collection<User> getUsers() {
         return userStorage.getUsers();
