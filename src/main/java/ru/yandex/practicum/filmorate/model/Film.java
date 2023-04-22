@@ -3,13 +3,11 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import ru.yandex.practicum.filmorate.annotations.CorrectReleaseDay;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Getter
 @Setter
@@ -30,7 +28,7 @@ public class Film {
     @PositiveOrZero
     private Integer duration;
 
-    private Set<Long> likes = new HashSet<>();
+    private Set<Long> likes;
 
     public Film(long id, String name, String description, LocalDate releaseDate, Integer duration) {
         this.id = id;
@@ -38,7 +36,8 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-    }
+        this.likes = new HashSet<>();
 
+    }
 
 }
