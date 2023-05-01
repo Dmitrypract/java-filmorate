@@ -4,30 +4,34 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
-
 import lombok.*;
-
-
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-@Builder
 @Getter
 @Setter
 @ToString
 public class User {
-    @PositiveOrZero(message = "id can not be negative")
-    private int id;
-
-    @Email(message = "invalid email")
+    @PositiveOrZero
+    private Long id;
+    @Email
     @NotBlank
     private String email;
-    @NotBlank(message = "login must not be empty")
+    @NotBlank
     private String login;
     private String name;
-
-    /**
-     * Дата рождения должна быть моментом, датой или временем в прошлом или настоящем
-     */
     @PastOrPresent
     private LocalDate birthday;
+    private Set<Long> friendsId;
+
+    public User(long id, String email, String login, String name,LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+        this.friendsId = new HashSet<>();
+    }
+
 }
