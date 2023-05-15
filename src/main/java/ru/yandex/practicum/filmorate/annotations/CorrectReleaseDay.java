@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Documented
 @Constraint(validatedBy = FilmReleaseDateValidator.class)
 public @interface CorrectReleaseDay {
-    String message() default "";
+    String message() default "должен быть после {value}";
 
     Class<?>[] groups() default {};
 
