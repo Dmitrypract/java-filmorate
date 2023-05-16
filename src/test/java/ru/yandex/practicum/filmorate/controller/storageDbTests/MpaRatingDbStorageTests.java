@@ -7,10 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.storage.MpaRatingStorage;
-
 import java.util.Collection;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 
