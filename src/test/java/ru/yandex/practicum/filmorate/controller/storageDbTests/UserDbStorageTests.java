@@ -8,10 +8,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -57,13 +59,13 @@ public class UserDbStorageTests {
                 .build();
 
         userStorage.updateUser(updatedUser);
-        assertEquals("updatedName", userStorage.getUserById(updatedUser.getId()).getName());
+        assertEquals("updatedName", userStorage.getUserById(updatedUser.getId()).get().getName());
     }
 
     @Test
     public void getUserByIdTest() {
         userStorage.createUser(user);
-        assertEquals(user.getId(), userStorage.getUserById(user.getId()).getId());
+        assertEquals(user.getId(), userStorage.getUserById(user.getId()).get().getId());
     }
 
     @Test
