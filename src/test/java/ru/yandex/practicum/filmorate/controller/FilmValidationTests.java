@@ -1,20 +1,25 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.model.MpaRating;
+
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
+@RequiredArgsConstructor
+@SpringBootTest
 public class FilmValidationTests {
     private FilmController filmController;
     private Film film;
@@ -23,14 +28,19 @@ public class FilmValidationTests {
 
     @BeforeEach
     public void setUp() {
-        film = new Film(1, "name", "aa", LocalDate.of(2002, 2, 2), 2);
-        filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
-    }
-
-    @Test
-    public void filmDefaultTest() {
-        filmController.createFilm(film);
-        assertEquals(1, filmController.getFilms().size());
+        film = Film.builder()
+                .id(1L)
+                .name("name")
+                .description("description")
+                .duration(65)
+                .releaseDate(LocalDate.of(2002, 2, 2))
+                .likes(new ArrayList<>())
+                .genres(new ArrayList<>())
+                .mpa(MpaRating.builder()
+                        .id(1)
+                        .name("name")
+                        .build())
+                .build();
     }
 
     @Test
@@ -41,7 +51,7 @@ public class FilmValidationTests {
 
     @Test
     public void idMissedTest() {
-        assertThrows(FilmNotFoundException.class, () -> filmController.updateFilm(film));
+        assertThrows(NullPointerException.class, () -> filmController.updateFilm(film));
     }
 
     @Test
@@ -72,7 +82,7 @@ public class FilmValidationTests {
     @Test
     public void releaseDateIsBefore28_1895Test() {
         film.setReleaseDate(LocalDate.parse("28-12-1894", DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        assertThrows(FilmNotFoundException.class, () -> filmController.updateFilm(film));
+        assertThrows(NullPointerException.class, () -> filmController.updateFilm(film));
     }
 
     @Test

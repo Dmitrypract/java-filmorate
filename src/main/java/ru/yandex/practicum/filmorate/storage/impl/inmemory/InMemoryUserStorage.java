@@ -1,13 +1,14 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl.inmemory;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
-@Component
+@Repository
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
     private static long id = 1L;
@@ -15,10 +16,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
         user.setId(id);
         users.put(id++, user);
         log.info("Добавлен пользователь: " + user);
@@ -27,11 +24,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User updateUser(User user) {
-        getUserById(user.getId());
+    public Optional<User> updateUser(User user) {
+        if (!isExist(user.getId())) {
+            throw new UserNotFoundException();
+        }
         users.put(user.getId(), user);
-        log.info("Данные о пользователе {} обновлены.", user.getName());
-        return user;
+        return Optional.of(user);
     }
 
     @Override
@@ -41,22 +39,26 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(long id) {
-        User user = users.get(id);
-        if (user != null) {
-            return user;
+    public Optional<User> getUserById(long userId) {
+        if (!isExist(userId)) {
+            throw new UserNotFoundException();
         }
-        throw new UserNotFoundException(
-                String.format("Пользователь с таким id %s не существует", id));
+        return Optional.ofNullable(users.get(userId));
     }
 
     @Override
     public Collection<User> getUsersByIds(Collection<Long> ids) {
         List<User> result = new ArrayList<>();
         for (long id : ids) {
-            User user = getUserById(id);
-            result.add(user);
+            if (!isExist(id)) {
+                throw new UserNotFoundException();
+            }
+            result.add(users.get(id));
         }
         return result;
+    }
+
+    private boolean isExist(long userId) {
+        return users.containsKey(userId);
     }
 }

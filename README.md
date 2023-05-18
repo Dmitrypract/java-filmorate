@@ -1,2 +1,187 @@
 # java-filmorate
-Template repository for Filmorate project.
+Технологии: Java + Spring Boot + Maven + Lombok + JUnit + RESTful API + PostgreSQL + JDBC
+
+Данный проект представляет собой бэкенд для сервиса, который работает с фильмами и оценками пользователей и рекомендует фильмы к просмотру.
+
+Основная задача приложения - решить проблему поиска фильмов на вечер. С его помощью вы можете легко найти фильм, который вам понравится. Реализован функционал создания аккаунта, добавления друзей и возможность ставить фильмам лайки. В ленте событий можно увидеть, какие фильмы понравились вашим друзьям. Также есть возможность оставлять отзывы и читать отзывы других пользователей. Поиск поможет найти фильм по ключевым словам. Рекомендации помогут выбрать фильм на основе ваших предпочтений. Функциональность «Популярные фильмы» предлагает вывод самых любимых у зрителей фильмов по жанрам и годам.
+
+Реализованы следующие эндпоинты:
+1. Фильмы
+   POST /films - создание фильма
+
+PUT /films - редактирование фильма
+
+GET /films - получение списка всех фильмов
+
+GET /films/{id} - получение информации о фильме по его id
+
+PUT /films/{id}/like/{userId} — поставить лайк фильму
+
+DELETE /films/{id}/like/{userId} — удалить лайк фильма
+
+GET /films/popular?count={count} — возвращает список из первых count фильмов по количеству лайков. Если значение параметра count не задано, возвращает первые 10.
+
+2. Пользователи
+   POST /users - создание пользователя
+
+PUT /users - редактирование пользователя
+
+GET /users - получение списка всех пользователей
+
+GET /users/{id} - получение данных о пользователе по id
+
+PUT /users/{id}/friends/{friendId} — добавление в друзья
+
+DELETE /users/{id}/friends/{friendId} — удаление из друзей
+
+GET /users/{id}/friends — возвращает список друзей
+
+GET /users/{id}/friends/common/{otherId} — возвращает список друзей, общих с другим пользователем
+
+Валидация
+Данные, которые приходят в запросе на добавление нового фильма или пользователя, проходят проверку по следующим критериям:
+
+1. Фильмы
+   название не может быть пустым.
+
+максимальная длина описания — 200 символов
+
+дата релиза — не раньше 28 декабря 1895 года
+
+продолжительность фильма должна быть положительной
+
+2. Пользователи
+   электронная почта не может быть пустой и должна быть электронной почтой (аннотация @Email)
+
+логин не может быть пустым и содержать пробелы
+
+имя для отображения может быть пустым — в таком случае будет использован логин
+
+дата рождения не может быть в будущем.
+
+Схема базы данных
+
+Схема отображает отношения таблиц в базе данных:
+
+film - данные о фильмах (primary key - film_id, foreign keys - mpa_rating_id)
+
+genre - названия жанров фильма (primary key - genre_id)
+
+film_genre - данные о жанрах какого-то фильма (primary key - film_genre_id, foreign keys - film_id, genre_id)
+
+mpa_rating - определяет возрастное ограничение для фильма (primary key - mpa_rating_id)
+
+film_like - информация о лайках фильма и кто их поставил (primary key - like_id, foreign keys - user_id, film_id)
+
+user - данные о пользователях (primary key - user_id, foreign keys - friend_id, like_id)
+
+friendship - содержит информации о статусе «дружбы» между двумя пользователями (primary key - friendship_id, foreign keys - user_id, friend_id)
+
+° status = true — в таблице две записи о дружбе двух пользователей (id1 = id2; id2 = id1)
+
+° status = false — в таблице одна запись о дружбе двух пользователей(id1 = id2).
+
+![img.png](img.png)
+
+Примеры запросов:
+Пользователи
+создание пользователя
+
+INSERT INTO user (name, email, login, birthday)
+VALUES ( ?, ?, ?, ? );
+редактирование пользователя
+
+UPDATE user
+SET email = ?,
+login = ?,
+name = ?,
+birthday = ?
+WHERE id = ?
+получение списка всех пользователей
+
+SELECT *
+FROM user
+получение информации о пользователе по его id
+
+SELECT *
+FROM user
+WHERE id = ?
+добавление в друзья
+
+INSERT INTO friendship (user_id, friend_id, status)
+VALUES (?, ?, ?)
+удаление из друзей
+
+DELETE
+FROM friendship
+WHERE user_id = ? AND friend_id = ?
+возвращает список пользователей, являющихся его друзьями
+
+SELECT f.*
+FROM friendship AS f
+INNER JOIN user AS u ON u.user_id = f.friend_id
+WHERE f.user_id = ?
+список друзей, общих с другим пользователем
+
+SELECT u.*
+FROM user AS u
+INNER JOIN friendship AS fs ON u.id = fs.friend_id
+WHERE ut.id = ?
+
+INTERSECT
+
+SELECT u.*
+FROM user as u
+INNER JOIN friendship as fs ON u.id = fs.friend_id
+WHERE fs.user_id = ?
+Фильмы
+создание фильма
+
+INSERT INTO film (name, description, release_date, duration, mpa_rating_id)
+VALUES (?, ?, ?, ?, ?)
+редактирование фильма
+
+UPDATE film
+SET name = ?,
+description = ?,
+release_date = ?,
+duration = ?,
+mpa_rating_id = ?
+WHERE id = ?
+получение списка всех фильмов
+
+SELECT f.*, mp.name, COUNT(fl.user_id) AS rate
+FROM film AS f
+LEFT JOIN mpa_rating AS mp ON f.mpa_rating_id = mp.id
+LEFT JOIN film_like AS fl ON f.id = fl.film_id
+GROUP BY f.id
+ORDER BY f.id
+получение информации о фильме по его id
+
+SELECT f.*, mp.name, COUNT(fl.user_id) AS rate
+FROM film AS f
+LEFT JOIN mpa_rating AS mpt ON f.mpa_rating_id = mp.id
+LEFT JOIN film_like AS fl ON f.id = fl.film_id
+WHERE f.id = 2
+GROUP BY f.id
+пользователь ставит лайк фильму
+
+INSERT INTO film_like (film_id, user_id)
+VALUES (?, ?)
+пользователь удаляет лайк
+
+DELETE
+FROM film_like
+WHERE film_id = ? AND user_id = ?
+возвращает список из первых count фильмов по количеству лайков
+
+SELECT f.*,
+mp.name,
+COUNT(fl.user_id) AS rate
+FROM film AS f
+LEFT JOIN mpa_rating AS mp ON f.mpa_rating_id = mp.id
+LEFT JOIN film_like AS fl ON f.id = fl.film_id
+GROUP BY f.id
+ORDER BY rate DESC,
+f.id
+LIMIT ?
